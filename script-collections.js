@@ -51,9 +51,18 @@ db.createCollection("pulses_raw", {
           items: {
             bsonType: "object",
             properties: {
-              pulsed_at: { bsonType: "date" },
-              ms_since_boot: { bsonType: "long" },
-              delta_ms: { bsonType: "int" }
+              pulsed_at: { 
+                bsonType: "date" ,
+                description: "Horário exato queo pulso foi disparado"
+              },
+              ms_since_boot: { 
+                bsonType: "long",
+                description: "Tempo em milissegundos desde o início da captura pelo aparelho"
+              },
+              delta_ms: { 
+                bsonType: "int",
+                description: "Tempo em milissegundos desde o último disparo"
+              }
             }
           }
         }
@@ -124,7 +133,7 @@ db.createCollection("device_status", {
   validator: {
     $jsonSchema: {
       bsonType: "object",
-      required: ["device_id"],
+      required: ["device_id", "connectivity_status"],
       properties: {
         _id: { bsonType: "objectId" },
         device_id: { 
@@ -175,7 +184,7 @@ db.createCollection("user_preferences", {
   validator: {
     $jsonSchema: {
       bsonType: "object",
-      required: ["user_id", "dark_mode_enabled"],
+      required: ["user_id", "dark_mode_enabled", "notifications_enabled"],
       properties: {
         _id: { bsonType: "objectId" },
         user_id: { 
@@ -194,8 +203,14 @@ db.createCollection("user_preferences", {
           bsonType: "object",
           description: "Janela de horário silencioso",
           properties: {
-            start_hour: { bsonType: "string" },
-            end_hour: { bsonType: "string" }
+            start_hour: {
+              bsonType: "string",
+              description: "Horário da abertura da janela de silenciamento de notificações"
+            },
+            end_hour: { 
+              bsonType: "string",
+              description: "Horário da encerramento da janela de silenciamento de notificações"
+            }
           }
         },
         dark_mode_enabled: { 
@@ -299,10 +314,22 @@ db.createCollection("chat_sessions", {
           items: {
             bsonType: "object",
             properties: {
-              role: { enum: ["user", "bot"] },
-              text: { bsonType: "string" },
-              sent_at: { bsonType: "date" },
-              api_status_code: { bsonType: "int" }
+              role: { 
+                enum: ["user", "bot"],
+                description: "Remetente da mensagem: user -> usuário do app / bot: o modelo de IA"
+              },
+              text: { 
+                bsonType: "string",
+                description: "Texto da mensagem na íntegra"
+              },
+              sent_at: { 
+                bsonType: "date",
+                description: "Horário de envio da mensagem"
+              },
+              api_status_code: { 
+                bsonType: "int",
+                description: "Código do status enviado pela API"
+              }
             }
           }
         }
