@@ -7,7 +7,6 @@ Banco de dados de **aplicação com carga leve** dedicado à experiência do usu
 - **Padrão de carga**: Leitura predominante (usuário consultando app)
 - **Retenção**: Permanente em todas as coleções
 - **Integrações**: Conecta ao PostgreSQL (relacionamento por IDs)
-- **Usuários**: Apenas API Back-end (`role_api_service`) para escrita; time de dev (`role_dev_migration`) para manutenção
 
 ---
 
