@@ -169,21 +169,4 @@ db.chat_feedback.createIndex(
 
 print("✓ Índice simples criado em chat_feedback (session_id)");
 
-// ============================================================================
-// RESUMO EXECUTIVO
-// ============================================================================
-
-print("\n" + "=".repeat(70));
 print("✅ Todos os índices foram criados com sucesso!");
-print("=".repeat(70));
-print("\n📊 RESUMO DE ÍNDICES CRIADOS:");
-print("   db_delta_telemetry:");
-print("     • pulses_raw: TTL (7 dias) + Composto (device_id, sent_at)");
-print("     • consumption_summary: Composto (user_id, window_started_at) + Simples (device_id)");
-print("     • device_status: ÚNICO (device_id)");
-print("   db_delta_app:");
-print("     • user_preferences: ÚNICO (user_id)");
-print("     • alerts_history: Composto (user_id, triggered_at) + Parcial (device_id, resolved_at)");
-print("     • chat_sessions: Composto (user_id, last_activity_at) + Composto (user_id, is_open)");
-print("     • chat_feedback: Simples (session_id)");
-print("\n⚠️  Próxima etapa: mongosh < script-roles.js");

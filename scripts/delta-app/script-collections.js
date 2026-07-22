@@ -1,172 +1,14 @@
 /**
  * Delta Project — MongoDB Collections Setup
- * 
+ *
  * Este script cria as coleções MongoDB para o Projeto Delta.
  * Siga a ordem: crie os dois databases antes de executar este script.
- * 
+ *
  * Uso:
  *   mongosh < script-collections.js
  *   ou
  *   mongosh atlas-connection-string --file script-collections.js
  */
-
-// ============================================================================
-// DATABASE: db_delta_telemetry
-// ============================================================================
-
-use("db_delta_telemetry");
-
-// ─────────────────────────────────────────────────────────────────────────
-// Coleção: pulses_raw
-// Descrição: Payload bruto do ESP32 com array detalhado de pulsos
-// Ciclo de vida: 7 dias com TTL Index
-// ─────────────────────────────────────────────────────────────────────────
-
-db.createCollection("pulses_raw", {
-  validator: {
-    $jsonSchema: {
-      bsonType: "object",
-      required: ["device_id", "sent_at", "total_pulses"],
-      properties: {
-        _id: { bsonType: "objectId" },
-        device_id: { 
-          bsonType: "string",
-          description: "Identificador único do dispositivo (ESP32/Arduino)"
-        },
-        sent_at: { 
-          bsonType: "date",
-          description: "Timestamp de envio do pacote"
-        },
-        window_minutes: { 
-          bsonType: "int",
-          description: "Duração da janela de coleta em minutos"
-        },
-        total_pulses: { 
-          bsonType: "int",
-          description: "Total de pulsos capturados na janela"
-        },
-        pulses: {
-          bsonType: "array",
-          description: "Array detalhado de cada pulso com timestamps e deltas",
-          items: {
-            bsonType: "object",
-            properties: {
-              pulsed_at: { 
-                bsonType: "date" ,
-                description: "Horário exato queo pulso foi disparado"
-              },
-              ms_since_boot: { 
-                bsonType: "long",
-                description: "Tempo em milissegundos desde o início da captura pelo aparelho"
-              },
-              delta_ms: { 
-                bsonType: "int",
-                description: "Tempo em milissegundos desde o último disparo"
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  validationLevel: "moderate"
-});
-
-print("✓ Coleção 'pulses_raw' criada (db_delta_telemetry)");
-
-// ─────────────────────────────────────────────────────────────────────────
-// Coleção: consumption_summary
-// Descrição: Resumo consolidado de consumo por janela de 5 minutos
-// Ciclo de vida: Permanente (sem TTL)
-// ─────────────────────────────────────────────────────────────────────────
-
-db.createCollection("consumption_summary", {
-  validator: {
-    $jsonSchema: {
-      bsonType: "object",
-      required: ["device_id", "window_started_at", "window_finished_at", "consumption_liters"],
-      properties: {
-        _id: { bsonType: "objectId" },
-        device_id: { 
-          bsonType: "string",
-          description: "Identificador do dispositivo"
-        },
-        user_id: { 
-          bsonType: "string",
-          description: "ID do usuário dono do dispositivo (referência para PostgreSQL)"
-        },
-        window_started_at: { 
-          bsonType: "date",
-          description: "Início da janela de consumo"
-        },
-        window_finished_at: { 
-          bsonType: "date",
-          description: "Fim da janela de consumo"
-        },
-        consumption_liters: { 
-          bsonType: "long",
-          description: "Volume total consumido na janela"
-        },
-        lpm_average: { 
-          bsonType: "int",
-          description: "Vazão média em litros por minuto"
-        },
-        anomaly_detected: { 
-          bsonType: "bool",
-          description: "Flag setada pela IA para anomalias"
-        }
-      }
-    }
-  },
-  validationLevel: "moderate"
-});
-
-print("✓ Coleção 'consumption_summary' criada (db_delta_telemetry)");
-
-// ─────────────────────────────────────────────────────────────────────────
-// Coleção: device_status
-// Descrição: Status único por dispositivo, atualizado via upsert
-// Ciclo de vida: Permanente
-// ─────────────────────────────────────────────────────────────────────────
-
-db.createCollection("device_status", {
-  validator: {
-    $jsonSchema: {
-      bsonType: "object",
-      required: ["device_id", "connectivity_status"],
-      properties: {
-        _id: { bsonType: "objectId" },
-        device_id: { 
-          bsonType: "string",
-          description: "Identificador único do dispositivo"
-        },
-        last_ping_at: { 
-          bsonType: "date",
-          description: "Timestamp do último contato"
-        },
-        wifi_signal_rssi: {
-          enum: ["excellent", "good", "weak", "critical", null],
-          description: "Classificação do sinal Wi-Fi"
-        },
-        firmware_version: { 
-          bsonType: "string",
-          description: "Versão do firmware instalado"
-        },
-        connectivity_status: {
-          enum: ["online", "offline", "unstable", null],
-          description: "Status de conectividade"
-        },
-        unavailability_reason: { 
-          bsonType: ["string", "null"],
-          description: "Motivo do status offline/unstable"
-        }
-      }
-    }
-  },
-  validationLevel: "moderate"
-});
-
-print("✓ Coleção 'device_status' criada (db_delta_telemetry)");
 
 // ============================================================================
 // DATABASE: db_delta_app
@@ -187,15 +29,15 @@ db.createCollection("user_preferences", {
       required: ["user_id", "dark_mode_enabled", "notifications_enabled"],
       properties: {
         _id: { bsonType: "objectId" },
-        user_id: { 
+        user_id: {
           bsonType: "string",
           description: "Referência ao usuário (ID do PostgreSQL)"
         },
-        daily_liters_target: { 
+        daily_liters_target: {
           bsonType: "int",
           description: "Meta diária de consumo em litros"
         },
-        notifications_enabled: { 
+        notifications_enabled: {
           bsonType: "bool",
           description: "Ativa/desativa push notifications"
         },
@@ -207,13 +49,13 @@ db.createCollection("user_preferences", {
               bsonType: "string",
               description: "Horário da abertura da janela de silenciamento de notificações"
             },
-            end_hour: { 
+            end_hour: {
               bsonType: "string",
               description: "Horário da encerramento da janela de silenciamento de notificações"
             }
           }
         },
-        dark_mode_enabled: { 
+        dark_mode_enabled: {
           bsonType: "bool",
           description: "Preferência visual do app"
         }
@@ -238,24 +80,24 @@ db.createCollection("alerts_history", {
       required: ["device_id", "alert_type", "triggered_at"],
       properties: {
         _id: { bsonType: "objectId" },
-        device_id: { 
+        device_id: {
           bsonType: "string",
           description: "Dispositivo que originou o alerta"
         },
-        user_id: { 
+        user_id: {
           bsonType: "string",
           description: "Usuário notificado"
         },
-        alert_type: { 
+        alert_type: {
           bsonType: "string",
           enum: ["vazamento_continuo", "fluxo_atipico", "dispositivo_offline", "leitura_impossivel"],
           description: "Tipo de anomalia detectada"
         },
-        triggered_at: { 
+        triggered_at: {
           bsonType: "date",
           description: "Momento de abertura do alerta"
         },
-        resolved_at: { 
+        resolved_at: {
           bsonType: ["date", "null"],
           description: "Momento de resolução (null enquanto ativo)"
         },
@@ -284,27 +126,27 @@ db.createCollection("chat_sessions", {
       required: ["user_id", "started_at"],
       properties: {
         _id: { bsonType: "objectId" },
-        user_id: { 
+        user_id: {
           bsonType: "string",
           description: "Usuário dono da sessão"
         },
-        started_at: { 
+        started_at: {
           bsonType: "date",
           description: "Início da sessão"
         },
-        last_activity_at: { 
+        last_activity_at: {
           bsonType: "date",
           description: "Última interação"
         },
-        is_open: { 
+        is_open: {
           bsonType: "bool",
           description: "Sessão aceita novas mensagens"
         },
-        is_active: { 
+        is_active: {
           bsonType: "bool",
           description: "Sessão em atendimento agora"
         },
-        is_deleted: { 
+        is_deleted: {
           bsonType: "bool",
           description: "Soft delete (não remove o documento)"
         },
@@ -314,19 +156,19 @@ db.createCollection("chat_sessions", {
           items: {
             bsonType: "object",
             properties: {
-              role: { 
+              role: {
                 enum: ["user", "bot"],
                 description: "Remetente da mensagem: user -> usuário do app / bot: o modelo de IA"
               },
-              text: { 
+              text: {
                 bsonType: "string",
                 description: "Texto da mensagem na íntegra"
               },
-              sent_at: { 
+              sent_at: {
                 bsonType: "date",
                 description: "Horário de envio da mensagem"
               },
-              api_status_code: { 
+              api_status_code: {
                 bsonType: "int",
                 description: "Código do status enviado pela API"
               }
@@ -354,19 +196,19 @@ db.createCollection("chat_feedback", {
       required: ["session_id", "is_satisfied"],
       properties: {
         _id: { bsonType: "objectId" },
-        session_id: { 
+        session_id: {
           bsonType: "objectId",
           description: "Referência a chat_sessions._id"
         },
-        is_satisfied: { 
+        is_satisfied: {
           bsonType: "bool",
           description: "Avaliação binária (true = 👍, false = 👎)"
         },
-        user_comment: { 
+        user_comment: {
           bsonType: ["string", "null"],
           description: "Feedback livre do usuário"
         },
-        created_at: { 
+        created_at: {
           bsonType: "date",
           description: "Timestamp do feedback"
         }
@@ -379,6 +221,3 @@ db.createCollection("chat_feedback", {
 print("✓ Coleção 'chat_feedback' criada (db_delta_app)");
 
 print("\n✅ Todas as coleções foram criadas com sucesso!");
-print("⚠️  Próximas etapas:");
-print("   1. Execute: mongosh < script-indexes.js");
-print("   2. Execute: mongosh < script-roles.js");
