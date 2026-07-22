@@ -9,22 +9,10 @@ use("admin");
 // 1. Service Account da API (Gravação do ESP32 e cálculo do resumo)
 db.createRole(
   {
-    role: "role_api_service",
+    role: "teste",
     privileges: [
       {
-        resource: { db: "db_delta_telemetry", collection: "pulses_raw" },
-        actions: ["find", "insert", "update"]
-      },
-      {
-        resource: { db: "db_delta_telemetry", collection: "consumption_summary" },
-        actions: ["find", "insert", "update"]
-      },
-      {
-        resource: { db: "db_delta_telemetry", collection: "device_status" },
-        actions: ["find", "insert", "update"]
-      },
-      {
-        resource: { db: "db_delta_telemetry", collection: "maintenance_logs" },
+        resource: { db: "db_delta_telemetry", collection: "" },
         actions: ["find", "insert", "update"]
       }
     ],

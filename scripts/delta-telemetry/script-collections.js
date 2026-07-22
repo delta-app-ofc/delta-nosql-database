@@ -56,11 +56,11 @@ db.createCollection("pulses_raw", {
                 description: "Horário exato queo pulso foi disparado"
               },
               ms_since_boot: { 
-                bsonType: "long",
+                bsonType: ["int", "long"],
                 description: "Tempo em milissegundos desde o início da captura pelo aparelho"
               },
               delta_ms: { 
-                bsonType: "int",
+                bsonType: ["int", "long"],
                 description: "Tempo em milissegundos desde o último disparo"
               }
             }
@@ -104,7 +104,7 @@ db.createCollection("consumption_summary", {
           description: "Fim da janela de consumo"
         },
         consumption_liters: { 
-          bsonType: "long",
+          bsonType: ["int", "long"],
           description: "Volume total consumido na janela"
         },
         lpm_average: { 
