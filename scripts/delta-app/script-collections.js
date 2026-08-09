@@ -26,11 +26,11 @@ db.createCollection("user_preferences", {
   validator: {
     $jsonSchema: {
       bsonType: "object",
-      required: ["user_id", "dark_mode_enabled", "notifications_enabled"],
+      required: ["user_id", "dark_mode_enabled"],
       properties: {
         _id: { bsonType: "objectId" },
         user_id: {
-          bsonType: "string",
+          bsonType: "int",
           description: "Referência ao usuário (ID do PostgreSQL)"
         },
         daily_liters_target: {
@@ -77,7 +77,7 @@ db.createCollection("alerts_history", {
   validator: {
     $jsonSchema: {
       bsonType: "object",
-      required: ["device_id", "alert_type", "triggered_at"],
+      required: ["device_id", "user_id", "alert_type", "triggered_at"],
       properties: {
         _id: { bsonType: "objectId" },
         device_id: {
@@ -85,8 +85,8 @@ db.createCollection("alerts_history", {
           description: "Dispositivo que originou o alerta"
         },
         user_id: {
-          bsonType: "string",
-          description: "Usuário notificado"
+          bsonType: "int",
+          description: "Usuário notificado (referência ao ID do PostgreSQL)"
         },
         alert_type: {
           bsonType: "string",
@@ -127,8 +127,8 @@ db.createCollection("chat_sessions", {
       properties: {
         _id: { bsonType: "objectId" },
         user_id: {
-          bsonType: "string",
-          description: "Usuário dono da sessão"
+          bsonType: "int",
+          description: "Usuário dono da sessão (referência ao ID do PostgreSQL)"
         },
         started_at: {
           bsonType: "date",
@@ -155,6 +155,7 @@ db.createCollection("chat_sessions", {
           description: "Mensagens da sessão (máx. 50-100)",
           items: {
             bsonType: "object",
+            required: ["role", "api_status_code"],
             properties: {
               role: {
                 enum: ["user", "bot"],

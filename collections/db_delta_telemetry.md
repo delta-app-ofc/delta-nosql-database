@@ -27,7 +27,7 @@ Recebe o payload **bruto e completo** do ESP32 a cada janela de tempo (5–10 mi
 
 ```json
 {
-  "_id": ObjectId,
+  "_id": ObjectId("60c72b2f9b1d8b2bad723456"),
   "device_id": "ESP32-SP-0912",
   "sent_at": "2026-07-17T17:10:00Z",
   "window_minutes": 5,
@@ -78,9 +78,9 @@ Documento **consolidado e leve**, gerado logo após a IA processar o `pulses_raw
 
 ```json
 {
-  "_id": ObjectId,
+  "_id": ObjectId("60c72b2f9b1d8b2bad723456"),
   "device_id": "ESP32-SP-0912",
-  "user_id": "60c72b2f9b1d8b2bad723456",
+  "user_id": 212,
   "window_started_at": "2026-07-17T17:05:00Z",
   "window_finished_at": "2026-07-17T17:10:00Z",
   "consumption_liters": 14,
@@ -101,13 +101,13 @@ Documento **consolidado e leve**, gerado logo após a IA processar o `pulses_raw
 ```javascript
 // App: Histórico de consumo do usuário (últimos 30 dias)
 db.consumption_summary.find({
-  user_id: "60c72b2f9b1d8b2bad723456",
+  user_id: 212,
   window_started_at: { $gte: new Date(Date.now() - 2592000000) }
 }).sort({ window_started_at: -1 }).limit(1000);
 
 // Agregação: Consumo diário para dashboard SQL
 db.consumption_summary.aggregate([
-  { $match: { user_id: "60c72b2f9b1d8b2bad723456" } },
+  { $match: { user_id: 212 } },
   { $group: {
       _id: { $dateToString: { format: "%Y-%m-%d", date: "$window_started_at" } },
       total_liters: { $sum: "$consumption_liters" },
@@ -135,7 +135,7 @@ Um **único documento por dispositivo**, atualizado via *upsert* a cada ping. Re
 
 ```json
 {
-  "_id": ObjectId,
+  "_id": ObjectId("60c72b2f9b1d8b2bad723456"),
   "device_id": "ESP32-SP-0912",
   "last_ping_at": "2026-07-17T17:10:00Z",
   "wifi_signal_rssi": "good",

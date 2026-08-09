@@ -18,15 +18,15 @@ use("db_delta_app");
 
 db.user_preferences.insertMany([
   {
-    user_id: "60c72b2f9b1d8b2bad723456",
-    daily_liters_target: 300,
+    user_id: NumberInt(212),
+    daily_liters_target: NumberInt(300),
     notifications_enabled: true,
     quiet_hours: { start_hour: "22:00", end_hour: "06:00" },
     dark_mode_enabled: false
   },
   {
-    user_id: "60c72b2f9b1d8b2bad723457",
-    daily_liters_target: 250,
+    user_id: NumberInt(213),
+    daily_liters_target: NumberInt(250),
     notifications_enabled: true,
     quiet_hours: { start_hour: "23:00", end_hour: "07:00" },
     dark_mode_enabled: true
@@ -42,7 +42,7 @@ print("✓ 2 documentos inseridos em user_preferences");
 db.alerts_history.insertMany([
   {
     device_id: "ESP32-SP-0912",
-    user_id: "60c72b2f9b1d8b2bad723456",
+    user_id: NumberInt(212),
     alert_type: "vazamento_continuo",
     triggered_at: new Date("2026-07-16T03:12:00Z"),
     resolved_at: new Date("2026-07-16T08:30:00Z"),
@@ -50,7 +50,7 @@ db.alerts_history.insertMany([
   },
   {
     device_id: "ESP32-SP-0913",
-    user_id: "60c72b2f9b1d8b2bad723457",
+    user_id: NumberInt(213),
     alert_type: "fluxo_atipico",
     triggered_at: new Date("2026-07-17T14:00:00Z"),
     resolved_at: null,
@@ -66,7 +66,7 @@ print("✓ 2 documentos inseridos em alerts_history");
 
 db.chat_sessions.insertMany([
   {
-    user_id: "60c72b2f9b1d8b2bad723456",
+    user_id: NumberInt(212),
     started_at: new Date("2026-07-17T14:00:00Z"),
     last_activity_at: new Date("2026-07-17T14:05:00Z"),
     is_open: false,
@@ -77,13 +77,13 @@ db.chat_sessions.insertMany([
         role: "user",
         text: "Por que meu consumo subiu tanto ontem?",
         sent_at: new Date("2026-07-17T14:00:05Z"),
-        api_status_code: 200
+        api_status_code: NumberInt(200)
       },
       {
         role: "bot",
         text: "Identifiquei um fluxo contínuo de 2.8 LPM de madrugada. Pode ser um vazamento.",
         sent_at: new Date("2026-07-17T14:00:12Z"),
-        api_status_code: 200
+        api_status_code: NumberInt(200)
       }
     ]
   }
@@ -97,7 +97,7 @@ print("✓ 1 documento inserido em chat_sessions");
 
 // Nota: Para este exemplo, precisaríamos do _id da sessão criada acima
 // A forma mais segura é fazer insert e depois recuperar o ID
-const lastSession = db.chat_sessions.findOne({ user_id: "60c72b2f9b1d8b2bad723456" });
+const lastSession = db.chat_sessions.findOne({ user_id: NumberInt(212) });
 
 if (lastSession) {
   db.chat_feedback.insertOne({

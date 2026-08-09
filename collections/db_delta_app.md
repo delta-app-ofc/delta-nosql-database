@@ -26,8 +26,8 @@ Preferências do aplicativo por usuário: meta de consumo, horários de silênci
 
 ```json
 {
-  "_id": ObjectId,
-  "user_id": "60c72b2f9b1d8b2bad723456",
+  "_id": ObjectId("60c72b2f9b1d8b2bad723456"),
+  "user_id": 212,
   "daily_liters_target": 300,
   "notifications_enabled": true,
   "quiet_hours": {
@@ -48,11 +48,11 @@ Preferências do aplicativo por usuário: meta de consumo, horários de silênci
 
 ```javascript
 // API: Buscar preferências do usuário
-db.user_preferences.findOne({ user_id: "60c72b2f9b1d8b2bad723456" });
+db.user_preferences.findOne({ user_id: 212 });
 
 // Atualizar meta do usuário
 db.user_preferences.updateOne(
-  { user_id: "60c72b2f9b1d8b2bad723456" },
+  { user_id: 212 },
   { $set: { daily_liters_target: 350 } },
   { upsert: true }
 );
@@ -76,9 +76,9 @@ Registro definitivo de **cada anomalia disparada pela IA** — vazamentos, fluxo
 
 ```json
 {
-  "_id": ObjectId,
+  "_id": ObjectId("60c72b2f9b1d8b2bad723456"),
   "device_id": "ESP32-SP-0912",
-  "user_id": "60c72b2f9b1d8b2bad723456",
+  "user_id": 212,
   "alert_type": "vazamento_continuo",
   "triggered_at": "2026-07-16T03:12:00Z",
   "resolved_at": "2026-07-16T08:30:00Z",
@@ -105,7 +105,7 @@ Registro definitivo de **cada anomalia disparada pela IA** — vazamentos, fluxo
 ```javascript
 // App: Últimos alertas do usuário (tela de notificações)
 db.alerts_history.find({
-  user_id: "60c72b2f9b1d8b2bad723456"
+  user_id: 212
 }).sort({ triggered_at: -1 }).limit(20);
 
 // Alertas ainda ativos (não resolvidos)
@@ -147,8 +147,8 @@ Cada documento pode ter no máximo **50–100 mensagens**. Ao atingir o limite, 
 
 ```json
 {
-  "_id": ObjectId,
-  "user_id": "60c72b2f9b1d8b2bad723456",
+  "_id": ObjectId("60c72b2f9b1d8b2bad723456"),
+  "user_id": 212,
   "started_at": "2026-07-17T14:00:00Z",
   "last_activity_at": "2026-07-17T14:05:00Z",
   "is_open": false,
@@ -183,18 +183,18 @@ Cada documento pode ter no máximo **50–100 mensagens**. Ao atingir o limite, 
 ```javascript
 // App: Histórico de chats do usuário
 db.chat_sessions.find({
-  user_id: "60c72b2f9b1d8b2bad723456"
+  user_id: 212
 }).sort({ last_activity_at: -1 }).limit(20);
 
 // App: Abrir chat anterior para continuar
 db.chat_sessions.findOne({
   _id: ObjectId("..."),
-  user_id: "60c72b2f9b1d8b2bad723456"
+  user_id: 212
 });
 
 // Back-end: Encontrar uma sessão aberta para o usuário
 db.chat_sessions.findOne({
-  user_id: "60c72b2f9b1d8b2bad723456",
+  user_id: 212,
   is_open: true
 });
 
@@ -243,7 +243,7 @@ Avaliação do usuário sobre cada sessão de chat encerrada (satisfação com o
 
 ```json
 {
-  "_id": ObjectId,
+  "_id": ObjectId("60c72b2f9b1d8b2bad723c001"),
   "session_id": ObjectId("61a8f9c2b9d1b2bad723c001"),
   "is_satisfied": true,
   "user_comment": "Resolveu minha dúvida rápido.",

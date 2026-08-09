@@ -84,7 +84,7 @@ db.createCollection("consumption_summary", {
   validator: {
     $jsonSchema: {
       bsonType: "object",
-      required: ["device_id", "window_started_at", "window_finished_at", "consumption_liters"],
+      required: ["device_id", "user_id", "window_started_at", "window_finished_at", "consumption_liters"],
       properties: {
         _id: { bsonType: "objectId" },
         device_id: { 
@@ -92,7 +92,7 @@ db.createCollection("consumption_summary", {
           description: "Identificador do dispositivo"
         },
         user_id: { 
-          bsonType: "string",
+          bsonType: "int",
           description: "ID do usuário dono do dispositivo (referência para PostgreSQL)"
         },
         window_started_at: { 
@@ -104,11 +104,11 @@ db.createCollection("consumption_summary", {
           description: "Fim da janela de consumo"
         },
         consumption_liters: { 
-          bsonType: ["int", "long"],
+          bsonType: "double",
           description: "Volume total consumido na janela"
         },
         lpm_average: { 
-          bsonType: "int",
+          bsonType: "double",
           description: "Vazão média em litros por minuto"
         },
         anomaly_detected: { 
@@ -133,7 +133,7 @@ db.createCollection("device_status", {
   validator: {
     $jsonSchema: {
       bsonType: "object",
-      required: ["device_id", "connectivity_status"],
+      required: ["device_id"],
       properties: {
         _id: { bsonType: "objectId" },
         device_id: { 
