@@ -157,13 +157,15 @@ Cada documento pode ter no máximo **50–100 mensagens**. Ao atingir o limite, 
   "messages": [
     {
       "role": "user",
-      "text": "Por que meu consumo subiu tanto ontem?",
+      "content_type": "text",
+      "content": "Por que meu consumo subiu tanto ontem?",
       "sent_at": "2026-07-17T14:00:05Z",
       "api_status_code": 200
     },
     {
       "role": "bot",
-      "text": "Identifiquei um fluxo contínuo de 2.8 LPM de madrugada. Pode ser um vazamento.",
+      "content_type": "text",
+      "content": "Identifiquei um fluxo contínuo de 2.8 LPM de madrugada. Pode ser um vazamento.",
       "sent_at": "2026-07-17T14:00:12Z",
       "api_status_code": 200
     }
@@ -218,7 +220,7 @@ db.chat_sessions.updateOne(
   { _id: ObjectId("...") },
   {
     $set: { is_open: true, is_active: true },
-    $push: { messages: { ... } }
+    $push: { messages: { role: "user", content_type: "text", content: "...", sent_at: new Date(), api_status_code: 200 } }
   }
 );
 

@@ -75,13 +75,15 @@ db.chat_sessions.insertMany([
     messages: [
       {
         role: "user",
-        text: "Por que meu consumo subiu tanto ontem?",
+        content_type: "text",
+        content: "Por que meu consumo subiu tanto ontem?",
         sent_at: new Date("2026-07-17T14:00:05Z"),
         api_status_code: NumberInt(200)
       },
       {
         role: "bot",
-        text: "Identifiquei um fluxo contínuo de 2.8 LPM de madrugada. Pode ser um vazamento.",
+        content_type: "text",
+        content: "Identifiquei um fluxo contínuo de 2.8 LPM de madrugada. Pode ser um vazamento.",
         sent_at: new Date("2026-07-17T14:00:12Z"),
         api_status_code: NumberInt(200)
       }

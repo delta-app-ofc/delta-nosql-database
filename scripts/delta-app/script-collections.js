@@ -155,15 +155,20 @@ db.createCollection("chat_sessions", {
           description: "Mensagens da sessão (máx. 50-100)",
           items: {
             bsonType: "object",
-            required: ["role", "api_status_code"],
+            required: ["role", "content_type", "content", "api_status_code"],
             properties: {
               role: {
                 enum: ["user", "bot"],
                 description: "Remetente da mensagem: user -> usuário do app / bot: o modelo de IA"
               },
-              text: {
+              content_type: {
                 bsonType: "string",
-                description: "Texto da mensagem na íntegra"
+                enum: ["text", "function"],
+                description: "Tipo de conteúdo da mensagem: texto ou chamada de função"
+              },
+              content: {
+                bsonType: "string",
+                description: "Conteúdo da mensagem na íntegra (texto ou JSON de função)"
               },
               sent_at: {
                 bsonType: "date",

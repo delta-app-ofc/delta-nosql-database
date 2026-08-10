@@ -54,10 +54,6 @@ Custom Role: role_api_service
 Database: admin
 ```
 
-Repita para:
-- `delta_databricks_reader` com `role_data_pipeline_reader`
-- `delta_dev_admin` com `role_dev_migration`
-
 Salve as connection strings em `.env`:
 
 ```bash
@@ -133,7 +129,7 @@ async function ingestPulses(espPacket) {
         $set: {
           last_ping_at: new Date(),
           connectivity_status: "online",
-          wifi_signal_rssi: espPacket.rssi,
+          wifi_signal_rssi: "excellent",
           firmware_version: espPacket.fw_version
         }
       },
