@@ -9,6 +9,8 @@ Banco de dados **operacional de alta carga** dedicado à ingestão de telemetria
 - **Integrações**: Alimenta a IA em tempo real e o Databricks para análise histórica
 - **Usuários**: API Back-end (`role_api_service`), Databricks (`role_data_pipeline_reader`)
 
+Os exemplos de documentos abaixo usam o [MongoDB Extended JSON (EJSON)](https://www.mongodb.com/docs/manual/reference/mongodb-extended-json/), para deixar explícitos tipos BSON como `objectId`, `date` e `double`.
+
 ---
 
 ## Coleção: `pulses_raw`
@@ -27,15 +29,15 @@ Recebe o payload **bruto e completo** do ESP32 a cada janela de tempo (5–10 mi
 
 ```json
 {
-  "_id": ObjectId("60c72b2f9b1d8b2bad723456"),
+  "_id": { "$oid": "60c72b2f9b1d8b2bad723456" },
   "device_id": "ESP32-SP-0912",
-  "sent_at": "2026-07-17T17:10:00Z",
+  "sent_at": { "$date": "2026-07-17T17:10:00Z" },
   "window_minutes": 5,
   "total_pulses": 3,
   "pulses": [
-    { "pulsed_at": "2026-07-17T17:05:12Z", "ms_since_boot": 3452210, "delta_ms": 0 },
-    { "pulsed_at": "2026-07-17T17:05:15Z", "ms_since_boot": 3453210, "delta_ms": 1000 },
-    { "pulsed_at": "2026-07-17T17:06:45Z", "ms_since_boot": 3545210, "delta_ms": 92000 }
+    { "pulsed_at": { "$date": "2026-07-17T17:05:12Z" }, "ms_since_boot": 3452210, "delta_ms": 0 },
+    { "pulsed_at": { "$date": "2026-07-17T17:05:15Z" }, "ms_since_boot": 3453210, "delta_ms": 1000 },
+    { "pulsed_at": { "$date": "2026-07-17T17:06:45Z" }, "ms_since_boot": 3545210, "delta_ms": 92000 }
   ]
 }
 ```
@@ -78,13 +80,13 @@ Documento **consolidado e leve**, gerado logo após a IA processar o `pulses_raw
 
 ```json
 {
-  "_id": ObjectId("60c72b2f9b1d8b2bad723456"),
+  "_id": { "$oid": "60c72b2f9b1d8b2bad723456" },
   "device_id": "ESP32-SP-0912",
   "user_id": 212,
-  "window_started_at": "2026-07-17T17:05:00Z",
-  "window_finished_at": "2026-07-17T17:10:00Z",
-  "consumption_liters": 14,
-  "lpm_average": 2,
+  "window_started_at": { "$date": "2026-07-17T17:05:00Z" },
+  "window_finished_at": { "$date": "2026-07-17T17:10:00Z" },
+  "consumption_liters": { "$numberDouble": "14.0" },
+  "lpm_average": { "$numberDouble": "2.0" },
   "anomaly_detected": false
 }
 ```
@@ -135,9 +137,9 @@ Um **único documento por dispositivo**, atualizado via *upsert* a cada ping. Re
 
 ```json
 {
-  "_id": ObjectId("60c72b2f9b1d8b2bad723456"),
+  "_id": { "$oid": "60c72b2f9b1d8b2bad723456" },
   "device_id": "ESP32-SP-0912",
-  "last_ping_at": "2026-07-17T17:10:00Z",
+  "last_ping_at": { "$date": "2026-07-17T17:10:00Z" },
   "wifi_signal_rssi": "good",
   "firmware_version": "v1.2.3",
   "connectivity_status": "online",

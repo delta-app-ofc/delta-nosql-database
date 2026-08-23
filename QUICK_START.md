@@ -90,7 +90,7 @@ db.consumption_summary.getIndexes();
 ### 4.1 Exemplo: Ingerir Telemetria
 
 ```javascript
-const { MongoClient } = require("mongodb");
+const { Double, MongoClient } = require("mongodb");
 
 const client = new MongoClient(process.env.MONGO_TELEMETRY_URI);
 
@@ -105,7 +105,11 @@ async function ingestPulses(espPacket) {
       sent_at: new Date(espPacket.sent_at),
       window_minutes: espPacket.window_minutes,
       total_pulses: espPacket.pulses.length,
-      pulses: espPacket.pulses // array com pulsed_at, ms_since_boot, delta_ms
+      pulses: espPacket.pulses.map((pulse) => ({
+        pulsed_at: new Date(pulse.pulsed_at),
+        ms_since_boot: pulse.ms_since_boot,
+        delta_ms: pulse.delta_ms
+      }))
     });
     
     // 2. IA processa e gera resumo
@@ -117,8 +121,9 @@ async function ingestPulses(espPacket) {
       user_id: summary.user_id,
       window_started_at: new Date(summary.window_start),
       window_finished_at: new Date(summary.window_end),
-      consumption_liters: summary.liters,
-      lpm_average: summary.avg_lpm,
+      // O validator exige o tipo BSON double, inclusive para valores inteiros.
+      consumption_liters: new Double(summary.liters),
+      lpm_average: new Double(summary.avg_lpm),
       anomaly_detected: summary.is_anomaly
     });
     
@@ -218,7 +223,8 @@ async function saveChatMessage(userId, message, sender = "user") {
         $push: {
           messages: {
             role: sender,
-            text: message,
+            content_type: "text",
+            content: message,
             sent_at: new Date(),
             api_status_code: 200
           }
