@@ -24,6 +24,7 @@ let client;
 let database;
 let sequence = 2_000;
 
+// Int32, Long e Double preservam exatamente os tipos BSON do contrato.
 function nextInteger() {
   sequence += 1;
   return new Int32(sequence);
@@ -88,6 +89,7 @@ function validDeviceStatus() {
   };
 }
 
+// O código 121 prova que a rejeição veio do validator do documento.
 async function expectValidationError(operation) {
   try {
     await operation();
@@ -112,6 +114,7 @@ async function expectDocumentAccepted(collectionName, document) {
   expect(result.insertedId).toBeInstanceOf(ObjectId);
 }
 
+// Os índices também compõem o contrato documentado do banco.
 async function expectIndex(collectionName, expectedIndex) {
   const indexes = await database.collection(collectionName).indexes();
   const actualIndex = indexes.find(
@@ -132,6 +135,7 @@ async function expectIndex(collectionName, expectedIndex) {
   }
 }
 
+// Aplica os scripts reais de coleções e índices, na ordem exigida.
 beforeAll(async () => {
   client = await connectMongo(MONGODB_URI);
   database = client.db(DATABASE_NAME);

@@ -13,6 +13,7 @@ export function runMongosh(
 
   const absoluteScriptPath = resolve(scriptPath);
 
+  // Usa um subprocesso para executar o script original, sem reimplementá-lo.
   return new Promise((resolveExecution, rejectExecution) => {
     const child = spawn("mongosh", [uri, absoluteScriptPath], {
       shell: false,
@@ -33,6 +34,7 @@ export function runMongosh(
       stderr += chunk;
     });
 
+    // `error` indica que o processo nem conseguiu iniciar, por exemplo sem mongosh no PATH.
     child.once("error", (cause) => {
       const error = new Error(
         `Não foi possível iniciar o mongosh para executar "${absoluteScriptPath}": ${cause.message}`,
@@ -44,6 +46,7 @@ export function runMongosh(
       rejectExecution(error);
     });
 
+    // `close` informa o código final: zero significa execução bem-sucedida.
     child.once("close", (exitCode, signal) => {
       if (exitCode === 0) {
         resolveExecution({

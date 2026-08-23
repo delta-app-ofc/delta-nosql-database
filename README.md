@@ -2,6 +2,8 @@
 
 Repositório dos scripts de criação e configuração dos bancos MongoDB do Projeto Delta. Ele mantém os schemas, índices, dados de exemplo e roles dos bancos `db_delta_app` e `db_delta_telemetry`, além da suíte automatizada que valida essas definições antes do merge.
 
+Para estudar como os testes funcionam e como criar novos casos, consulte o [guia didático da suíte](tests/README.md).
+
 ## Estrutura
 
 - `collections/` — documentação das coleções de cada banco.
