@@ -1,0 +1,20 @@
+{
+  "name": "delta-nosql-database",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Scripts e testes de schema dos bancos MongoDB do Projeto Delta.",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint \"scripts/**/*.js\" \"tests/**/*.js\" --no-error-on-unmatched-pattern",
+    "test:schema": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand --runTestsByPath tests/delta-app/schema-validation.test.js tests/delta-telemetry/schema-validation.test.js",
+    "test:breaking-changes": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand --runTestsByPath tests/delta-app/backward-compatibility.test.js tests/delta-telemetry/backward-compatibility.test.js"
+  },
+  "engines": {
+    "node": ">=18.18"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.1",
+    "jest": "^30.2.0",
+    "mongodb": "^6.21.0"
+  }
+}
