@@ -1,0 +1,25 @@
+{
+  "_id": { "$oid": "66c72b2f9b1d8b2bad72a003" },
+  "user_id": { "$numberInt": "212" },
+  "started_at": { "$date": "2026-07-17T14:00:00Z" },
+  "last_activity_at": { "$date": "2026-07-17T14:05:00Z" },
+  "is_open": false,
+  "is_active": false,
+  "is_deleted": false,
+  "messages": [
+    {
+      "role": "user",
+      "content_type": "text",
+      "content": "Por que meu consumo subiu tanto ontem?",
+      "sent_at": { "$date": "2026-07-17T14:00:05Z" },
+      "api_status_code": { "$numberInt": "200" }
+    },
+    {
+      "role": "bot",
+      "content_type": "text",
+      "content": "Identifiquei um fluxo contínuo de 2.8 LPM de madrugada. Pode ser um vazamento.",
+      "sent_at": { "$date": "2026-07-17T14:00:12Z" },
+      "api_status_code": { "$numberInt": "200" }
+    }
+  ]
+}

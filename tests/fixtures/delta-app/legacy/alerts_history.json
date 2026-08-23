@@ -1,0 +1,9 @@
+{
+  "_id": { "$oid": "66c72b2f9b1d8b2bad72a002" },
+  "device_id": "ESP32-SP-0912",
+  "user_id": { "$numberInt": "212" },
+  "alert_type": "vazamento_continuo",
+  "triggered_at": { "$date": "2026-07-16T03:12:00Z" },
+  "resolved_at": { "$date": "2026-07-16T08:30:00Z" },
+  "severity": "high"
+}

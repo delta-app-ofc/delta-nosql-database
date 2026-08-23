@@ -1,0 +1,24 @@
+{
+  "_id": { "$oid": "66c72b2f9b1d8b2bad72b001" },
+  "device_id": "ESP32-SP-0912",
+  "sent_at": { "$date": "2026-07-17T17:10:00Z" },
+  "window_minutes": { "$numberInt": "5" },
+  "total_pulses": { "$numberInt": "3" },
+  "pulses": [
+    {
+      "pulsed_at": { "$date": "2026-07-17T17:05:12Z" },
+      "ms_since_boot": { "$numberLong": "3452210" },
+      "delta_ms": { "$numberInt": "0" }
+    },
+    {
+      "pulsed_at": { "$date": "2026-07-17T17:05:15Z" },
+      "ms_since_boot": { "$numberLong": "3453210" },
+      "delta_ms": { "$numberLong": "1000" }
+    },
+    {
+      "pulsed_at": { "$date": "2026-07-17T17:06:45Z" },
+      "ms_since_boot": { "$numberLong": "3545210" },
+      "delta_ms": { "$numberInt": "92000" }
+    }
+  ]
+}

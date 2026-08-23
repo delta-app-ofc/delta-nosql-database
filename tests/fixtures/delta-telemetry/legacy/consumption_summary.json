@@ -1,0 +1,10 @@
+{
+  "_id": { "$oid": "66c72b2f9b1d8b2bad72b002" },
+  "device_id": "ESP32-SP-0912",
+  "user_id": { "$numberInt": "212" },
+  "window_started_at": { "$date": "2026-07-17T17:05:00Z" },
+  "window_finished_at": { "$date": "2026-07-17T17:10:00Z" },
+  "consumption_liters": { "$numberDouble": "14.0" },
+  "lpm_average": { "$numberDouble": "2.8" },
+  "anomaly_detected": false
+}
