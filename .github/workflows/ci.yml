@@ -1,0 +1,112 @@
+name: MongoDB CI
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+    types:
+      - opened
+      - synchronize
+      - edited
+    paths:
+      - "scripts/**"
+      - "collections/**"
+      - "tests/**"
+      - "package.json"
+      - "package-lock.json"
+      - "eslint.config.js"
+      - ".github/workflows/ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Lint, schemas and backward compatibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      MONGODB_URI: mongodb://127.0.0.1:27017
+
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand({ ping: 1 })' --quiet"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          cache: npm
+
+      - name: Install MongoDB Shell
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          sudo apt-get update
+          sudo apt-get install --yes ca-certificates curl gnupg
+
+          curl --fail --silent --show-error --location \
+            https://www.mongodb.org/static/pgp/server-8.0.asc \
+            | sudo gpg --batch --yes --dearmor \
+                --output /usr/share/keyrings/mongodb-server-8.0.gpg
+
+          . /etc/os-release
+          case "${VERSION_CODENAME}" in
+            noble|jammy)
+              mongodb_repo_codename="${VERSION_CODENAME}"
+              ;;
+            *)
+              mongodb_repo_codename="noble"
+              ;;
+          esac
+
+          echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg] https://repo.mongodb.org/apt/ubuntu ${mongodb_repo_codename}/mongodb-org/8.0 multiverse" \
+            | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list > /dev/null
+
+          sudo apt-get update
+          sudo apt-get install --yes mongodb-mongosh
+          mongosh --version
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Lint JavaScript files
+        run: npm run lint
+
+      - name: Wait for MongoDB
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for attempt in {1..30}; do
+            if mongosh "$MONGODB_URI" --quiet \
+              --eval 'db.adminCommand({ ping: 1 })' > /dev/null; then
+              echo "MongoDB is ready."
+              exit 0
+            fi
+
+            echo "Waiting for MongoDB (${attempt}/30)..."
+            sleep 2
+          done
+
+          echo "MongoDB did not become ready in time." >&2
+          exit 1
+
+      - name: Test schema validation
+        run: npm run test:schema
+
+      - name: Test backward compatibility
+        run: npm run test:breaking-changes

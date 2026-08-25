@@ -8,6 +8,8 @@ Banco de dados de **aplicação com carga leve** dedicado à experiência do usu
 - **Retenção**: Permanente em todas as coleções
 - **Integrações**: Conecta ao PostgreSQL (relacionamento por IDs)
 
+Os exemplos de documentos abaixo usam o [MongoDB Extended JSON (EJSON)](https://www.mongodb.com/docs/manual/reference/mongodb-extended-json/), para deixar explícitos tipos BSON como `objectId` e `date`.
+
 ---
 
 ## Coleção: `user_preferences`
@@ -26,7 +28,7 @@ Preferências do aplicativo por usuário: meta de consumo, horários de silênci
 
 ```json
 {
-  "_id": ObjectId("60c72b2f9b1d8b2bad723456"),
+  "_id": { "$oid": "60c72b2f9b1d8b2bad723456" },
   "user_id": 212,
   "daily_liters_target": 300,
   "notifications_enabled": true,
@@ -76,12 +78,12 @@ Registro definitivo de **cada anomalia disparada pela IA** — vazamentos, fluxo
 
 ```json
 {
-  "_id": ObjectId("60c72b2f9b1d8b2bad723456"),
+  "_id": { "$oid": "60c72b2f9b1d8b2bad723456" },
   "device_id": "ESP32-SP-0912",
   "user_id": 212,
   "alert_type": "vazamento_continuo",
-  "triggered_at": "2026-07-16T03:12:00Z",
-  "resolved_at": "2026-07-16T08:30:00Z",
+  "triggered_at": { "$date": "2026-07-16T03:12:00Z" },
+  "resolved_at": { "$date": "2026-07-16T08:30:00Z" },
   "severity": "high"
 }
 ```
@@ -147,10 +149,10 @@ Cada documento pode ter no máximo **50–100 mensagens**. Ao atingir o limite, 
 
 ```json
 {
-  "_id": ObjectId("60c72b2f9b1d8b2bad723456"),
+  "_id": { "$oid": "60c72b2f9b1d8b2bad723456" },
   "user_id": 212,
-  "started_at": "2026-07-17T14:00:00Z",
-  "last_activity_at": "2026-07-17T14:05:00Z",
+  "started_at": { "$date": "2026-07-17T14:00:00Z" },
+  "last_activity_at": { "$date": "2026-07-17T14:05:00Z" },
   "is_open": false,
   "is_active": false,
   "is_deleted": false,
@@ -159,14 +161,14 @@ Cada documento pode ter no máximo **50–100 mensagens**. Ao atingir o limite, 
       "role": "user",
       "content_type": "text",
       "content": "Por que meu consumo subiu tanto ontem?",
-      "sent_at": "2026-07-17T14:00:05Z",
+      "sent_at": { "$date": "2026-07-17T14:00:05Z" },
       "api_status_code": 200
     },
     {
       "role": "bot",
       "content_type": "text",
       "content": "Identifiquei um fluxo contínuo de 2.8 LPM de madrugada. Pode ser um vazamento.",
-      "sent_at": "2026-07-17T14:00:12Z",
+      "sent_at": { "$date": "2026-07-17T14:00:12Z" },
       "api_status_code": 200
     }
   ]
@@ -204,7 +206,7 @@ db.chat_sessions.findOne({
 db.chat_sessions.updateOne(
   { _id: ObjectId("...") },
   {
-    $push: { messages: { role: "bot", text: "...", sent_at: new Date(), api_status_code: 200 } },
+    $push: { messages: { role: "bot", content_type: "text", content: "...", sent_at: new Date(), api_status_code: 200 } },
     $set: { last_activity_at: new Date() }
   }
 );
@@ -245,11 +247,11 @@ Avaliação do usuário sobre cada sessão de chat encerrada (satisfação com o
 
 ```json
 {
-  "_id": ObjectId("60c72b2f9b1d8b2bad723c001"),
-  "session_id": ObjectId("61a8f9c2b9d1b2bad723c001"),
+  "_id": { "$oid": "60c72b2f9b1d8b2bad723c001" },
+  "session_id": { "$oid": "61a8f9c2b9d1b2bad723c001" },
   "is_satisfied": true,
   "user_comment": "Resolveu minha dúvida rápido.",
-  "created_at": "2026-07-17T14:06:00Z"
+  "created_at": { "$date": "2026-07-17T14:06:00Z" }
 }
 ```
 

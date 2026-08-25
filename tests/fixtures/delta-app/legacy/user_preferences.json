@@ -1,0 +1,11 @@
+{
+  "_id": { "$oid": "66c72b2f9b1d8b2bad72a001" },
+  "user_id": { "$numberInt": "212" },
+  "daily_liters_target": { "$numberInt": "300" },
+  "notifications_enabled": true,
+  "quiet_hours": {
+    "start_hour": "22:00",
+    "end_hour": "06:00"
+  },
+  "dark_mode_enabled": false
+}

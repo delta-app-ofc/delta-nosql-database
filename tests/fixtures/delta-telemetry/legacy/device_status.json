@@ -1,0 +1,9 @@
+{
+  "_id": { "$oid": "66c72b2f9b1d8b2bad72b003" },
+  "device_id": "ESP32-SP-0912",
+  "last_ping_at": { "$date": "2026-07-17T17:10:00Z" },
+  "wifi_signal_rssi": "good",
+  "firmware_version": "v1.2.3",
+  "connectivity_status": "online",
+  "unavailability_reason": null
+}
